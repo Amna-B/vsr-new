@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/your-username/my-fullstack-app.git'
+                git 'https://github.com/Amna-B/VSR2'
             }
         }
 
