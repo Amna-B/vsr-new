@@ -2,41 +2,49 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'yourdockerhubusername/my-fullstack-app'
+        DOCKER_IMAGE = 'amnab078/yourimagename'
+        DOCKER_TAG = 'latest'
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/Amna-B/VSR'
+                git url: 'https://github.com/Amna-B/vsr-new.git', branch: 'master'
             }
         }
 
         stage('Install & Test') {
             steps {
                 dir('client') {
-                    sh 'npm install'
-                    // sh 'npm test'  # optional frontend tests
-                }
-                dir('server') {
-                    sh 'npm install'
-                    // sh 'npm test'  # optional backend tests
+                    bat '''
+                    echo Installing dependencies...
+                    npm install
+                    
+                    echo Running tests...
+                    npm test
+                    '''
                 }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
+                bat '''
+                echo Building Docker image...
+                docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% .
+                '''
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([string(credentialsId: 'dockerhub-password', variable: 'DOCKERHUB_PASS')]) {
-                    sh '''
-                    echo "$DOCKERHUB_PASS" | docker login -u yourdockerhubusername --password-stdin
-                    docker push $DOCKER_IMAGE
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'amnab078', passwordVariable: 'dckr_pat_gY1Ki73_jHdd8sfDKzqvUNjR4pU')]) {
+                    bat '''
+                    echo Logging into Docker Hub...
+                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                    
+                    echo Pushing image...
+                    docker push %DOCKER_IMAGE%:%DOCKER_TAG%
                     '''
                 }
             }
@@ -44,10 +52,19 @@ pipeline {
 
         stage('Deploy to EC2') {
             steps {
-                sshagent(['ec2-key']) {
-                    sh 'ssh -o StrictHostKeyChecking=no ec2-user@your-ec2-ip "docker pull $DOCKER_IMAGE && docker stop app || true && docker rm app || true && docker run -d -p 80:5000 --name app $DOCKER_IMAGE"'
-                }
+                bat '''
+                echo Deploy stage - add your EC2 SSH and deployment script here
+                '''
             }
+        }
+    }
+
+    post {
+        failure {
+            echo 'Build failed!'
+        }
+        success {
+            echo 'Build succeeded!'
         }
     }
 }
