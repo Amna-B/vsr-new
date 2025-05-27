@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/Amna-B/VSR2'
+                git 'https://github.com/Amna-B/VSR'
             }
         }
 
