@@ -71,7 +71,7 @@ pipeline {
                 }
             }
         }
-    } // ← This was missing: closes the stages block
+    } 
 
     post {
         failure {
