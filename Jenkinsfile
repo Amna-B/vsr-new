@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'amnab078/yourimagename'
+        DOCKER_IMAGE = 'amnab078/vsr-app'
         DOCKER_TAG = 'latest'
     }
 
@@ -38,12 +38,12 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'amnab078', passwordVariable: 'dckr_pat_gY1Ki73_jHdd8sfDKzqvUNjR4pU')]) {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     bat '''
                     echo Logging into Docker Hub...
                     echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
                     
-                    echo Pushing image...
+                    echo Pushing image to Docker Hub...
                     docker push %DOCKER_IMAGE%:%DOCKER_TAG%
                     '''
                 }
