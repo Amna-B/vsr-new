@@ -52,12 +52,26 @@ pipeline {
 
         stage('Deploy to EC2') {
             steps {
-                bat '''
-                echo Deploy stage - add your EC2 SSH and deployment script here
-                '''
+                sshagent(['ec2-ssh-key']) {
+                    sh '''
+                        echo "Connecting to EC2 and deploying..."
+        
+                        ssh -o StrictHostKeyChecking=no ubuntu@3.109.213.171 << 'EOF'
+                            echo "Pulling latest Docker image..."
+                            docker pull amnab078/vsr-app:latest
+        
+                            echo "Stopping existing container..."
+                            docker stop vsr-app || true
+                            docker rm vsr-app || true
+        
+                            echo "Running new container..."
+                            docker run -d --name vsr-app -p 80:80 amnab078/vsr-app:latest
+                        EOF
+                    '''
+                }
             }
         }
-    }
+
 
     post {
         failure {
