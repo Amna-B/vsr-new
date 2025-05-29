@@ -58,7 +58,7 @@ pipeline {
                         echo y | plink -i "%KEY_FILE%" ubuntu@3.109.213.171 ^
                         "docker pull amnab078/vsr-app:latest && ^
                         docker stop vsr-app || echo skipping stop && ^
-                        docker rm vsr-app || echo skipping stop && ^
+                        docker rm vsr-app || echo skipping remove && ^
                         docker run -d --name vsr-app -p 80:80 amnab078/vsr-app:latest"
                     """
                 }
