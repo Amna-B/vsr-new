@@ -56,12 +56,13 @@ pipeline {
                 withCredentials([file(credentialsId: 'ec2-ppk-key', variable: 'PPK_FILE')]) {
                     bat """
                         echo Deploying to EC2...
-                        plink -i "%PPK_FILE%" -batch %EC2_HOST% ^
-                        "docker pull %DOCKER_IMAGE%:%DOCKER_TAG% && ^
-                        docker stop vsr-app || echo skipping stop && ^
-                        docker rm vsr-app || echo skipping remove && ^
-                        docker run -d --name vsr-app -p 80:80 %DOCKER_IMAGE%:%DOCKER_TAG%"
+                        plink -i "%PPK_FILE%" -batch ubuntu@3.109.213.171 ^
+                        "docker pull amnab078/vsr-app:latest && \
+                        docker stop vsr-app || echo skipping stop && \
+                        docker rm vsr-app || echo skipping remove && \
+                        docker run -d --name vsr-app -p 80:80 amnab078/vsr-app:latest"
                     """
+
                 }
             }
         }
