@@ -1,7 +1,7 @@
 const express = require("express");
-const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const path = require("path");
 require("dotenv").config();
 
 const chatbotRoute = require("./routes/chatbot");
@@ -12,20 +12,55 @@ const PORT = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// ✅ Serve React static files from ../client/build
-app.use(express.static(path.join(__dirname, "..", "client", "build")));
+// ✅ Serve static frontend files
+app.use(express.static(path.join(__dirname, "../client/build")));
 
-// ✅ API route
+// ✅ API routes
 app.use("/api/chat", chatbotRoute);
 
-// ✅ Fallback: all other routes -> React frontend
+// ✅ Serve React app for all other routes
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+  res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+
+
+
+
+
+
+// const express = require("express");
+// const path = require("path");
+// const cors = require("cors");
+// const bodyParser = require("body-parser");
+// require("dotenv").config();
+
+// const chatbotRoute = require("./routes/chatbot");
+
+// const app = express();
+// const PORT = 5000;
+
+// app.use(cors());
+// app.use(bodyParser.json());
+
+// // ✅ Serve React static files from ../client/build
+// app.use(express.static(path.join(__dirname, "..", "client", "build")));
+
+// // ✅ API route
+// app.use("/api/chat", chatbotRoute);
+
+// // ✅ Fallback: all other routes -> React frontend
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+// });
+
+// app.listen(PORT, () => {
+//   console.log(`Server is running on http://localhost:${PORT}`);
+// });
 
 
 
