@@ -13,20 +13,21 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ error: "Message is required" });
   }
 
-  try {
-    // Use the generateContent method for interacting with the Gemini API
-    const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",  // You can change this if needed
-      contents: [{ text: message }],
-    });
+try {
+  const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const reply = response.text;  // Get the response text from the API
+  const result = await model.generateContent([
+    { role: "user", parts: [{ text: message }] },
+  ]);
 
-    res.json({ reply });
-  } catch (error) {
-    console.error("Error interacting with Gemini:", error.message);
-    res.status(500).json({ error: "Failed to generate response from Gemini" });
-  }
+  const reply = result.response.text();
+
+  res.json({ reply });
+} catch (error) {
+  console.error("Error interacting with Gemini:", error.message);
+  res.status(500).json({ error: "Failed to generate response from Gemini" });
+}
+
 });
 
 module.exports = router;
