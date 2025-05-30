@@ -23,9 +23,9 @@ COPY server/package*.json ./server/
 # Copy frontend build to backend public directory (assumes backend serves static files)
 COPY --from=build /app/client/build ./server/public
 
-WORKDIR /app/server
+WORKDIR /server
 RUN npm install
 
 EXPOSE 5000
 
-CMD ["node", "app.js"]
+CMD ["node", "index.js"]
