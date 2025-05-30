@@ -26,10 +26,8 @@ COPY --from=build-frontend /app/client/build ./client/build
 # Expose the port
 EXPOSE 5000
 
-# Start server
-CMD ["node", "server/index.js"]
-
-
+# Start server (fix here)
+CMD ["node", "index.js"]
 
 
 
