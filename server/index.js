@@ -11,11 +11,48 @@ const PORT = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
+// Root route (homepage or API info)
+app.get("/", (req, res) => {
+  res.send("Welcome to the VSR App API. Use /api/chat to access the chatbot.");
+});
+
+// Chatbot route
 app.use("/api/chat", chatbotRoute);
 
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+// const express = require("express");
+// const cors = require("cors");
+// const bodyParser = require("body-parser");
+// require("dotenv").config();
+
+// const chatbotRoute = require("./routes/chatbot");
+
+// const app = express();
+// const PORT = 5000;
+
+// app.use(cors());
+// app.use(bodyParser.json());
+
+// app.use("/api/chat", chatbotRoute);
+
+// app.listen(PORT, () => {
+//   console.log(`Server is running on http://localhost:${PORT}`);
+// });
 
 
 
