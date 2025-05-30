@@ -1,78 +1,31 @@
 # Step 1: Build React Frontend
 FROM node:18 AS build
 
+WORKDIR /app
+
+# Copy React app files
+COPY client ./client
+COPY client/package*.json ./client/
+
 WORKDIR /app/client
-
-# Copy React app package files and install deps
-COPY client/package*.json ./
 RUN npm install
-
-# Copy all React frontend files
-COPY client/ ./
-
-# Build React frontend
 RUN npm run build
 
-# Step 2: Setup backend with frontend build
+# Step 2: Serve with Node backend
 FROM node:18
 
-WORKDIR /app/server
+WORKDIR /app
 
-# Copy backend package files and install deps
-COPY server/package*.json ./
+# Copy backend
+COPY server ./server
+COPY server/package*.json ./server/
+
+# Copy frontend build to backend public directory (assumes backend serves static files)
+COPY --from=build /app/client/build ./server/public
+
+WORKDIR /app/server
 RUN npm install
 
-# Copy backend source files
-COPY server/ ./
-
-# Copy React build from previous stage into backend's public folder
-COPY --from=build /app/client/build ./public
-
-# Expose backend port
 EXPOSE 5000
 
-# Run backend server
-CMD ["node", "index.js"]
-
-
-
-
-
-
-
-
-
-
-
-
-# # Step 1: Build React Frontend
-# FROM node:18 AS build
-
-# WORKDIR /app
-
-# # Copy React app files
-# COPY client ./client
-# COPY client/package*.json ./client/
-
-# WORKDIR /app/client
-# RUN npm install
-# RUN npm run build
-
-# # Step 2: Serve with Node backend
-# FROM node:18
-
-# WORKDIR /app
-
-# # Copy backend
-# COPY server ./server
-# COPY server/package*.json ./server/
-
-# # Copy frontend build to backend public directory (assumes backend serves static files)
-# COPY --from=build /app/client/build ./server/public
-
-# WORKDIR /app/server
-# RUN npm install
-
-# EXPOSE 5000
-
-# CMD ["node", "app.js"]
+CMD ["node", "app.js"]
