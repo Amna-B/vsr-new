@@ -5,15 +5,17 @@ pipeline {
         DOCKER_IMAGE = 'amnab078/vsr-app'
     }
 
-    stages {
         stage('Build Frontend') {
-            dir('client') {
-                withEnv(['CI=false']) {
-                    bat 'npm install'
-                    bat 'npm run build'
+            steps {
+                dir('client') {
+                    withEnv(['CI=false']) {
+                        bat 'npm install'
+                        bat 'npm run build'
+                    }
                 }
             }
         }
+
 
         stage('Build Docker Image') {
             steps {
