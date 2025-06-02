@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'amnab078/vsr-app'
         DOCKER_TAG = 'latest'
-        EC2_HOST = 'ubuntu@3.109.58.16'
+        EC2_HOST = 'ubuntu@13.232.223.89'
     }
 
     stages {
@@ -56,7 +56,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'ec2-ppk-key', variable: 'PPK_FILE')]) {
                     bat """
                         echo Deploying to EC2...
-                        plink -i "%PPK_FILE%" -batch ubuntu@3.109.58.16 ^
+                        plink -i "%PPK_FILE%" -batch ubuntu@13.232.223.89 ^
                         "docker pull amnab078/vsr-app:latest && \
                         docker stop vsr-app || echo skipping stop && \
                         docker rm vsr-app || echo skipping remove && \
