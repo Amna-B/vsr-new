@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Build Frontend') {
             steps {
-                dir('client-frontend') {
+                dir('client') {
                     bat 'npm install'
                     bat 'npm run build'
                 }
@@ -17,7 +17,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                dir('client-frontend') {
+                dir('client') {
                     bat "docker build -t %DOCKER_IMAGE% ."
                 }
             }
