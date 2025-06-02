@@ -9,8 +9,8 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('client') {
-                sh 'CI=false npm install'
-                sh 'CI=false npm run build'
+                bat 'CI=false npm install'
+                bat 'CI=false npm run build'
                 }
             }
         }
