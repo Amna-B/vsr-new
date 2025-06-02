@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'amnab078/vsr-app'
+        DOCKER_TAG = 'latest'
+        EC2_HOST = 'ubuntu@13.232.223.89'
     }
     
     stages {
@@ -20,15 +22,24 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t amnab078/vsr-app -f client/Dockerfile client'
+                bat '''
+                echo Building Docker image...
+                docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% .
+                '''
             }
         }
 
+
         stage('Push to Docker Hub') {
             steps {
-                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
-                    bat 'docker push %DOCKER_IMAGE%'
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    bat '''
+                    echo Logging into Docker Hub...
+                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                    
+                    echo Pushing image to Docker Hub...
+                    docker push %DOCKER_IMAGE%:%DOCKER_TAG%
+                    '''
                 }
             }
         }
