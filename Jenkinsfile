@@ -7,10 +7,10 @@ pipeline {
 
     stages {
         stage('Build Frontend') {
-            steps {
-                dir('client') {
-                bat 'set CI=false && npm install'
-                bat 'set CI=false && npm run build'
+            dir('client') {
+                withEnv(['CI=false']) {
+                    bat 'npm install'
+                    bat 'npm run build'
                 }
             }
         }
