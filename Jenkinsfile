@@ -1,7 +1,59 @@
-# client-frontend/Dockerfile
-FROM nginx:alpine
-COPY build/ /usr/share/nginx/html
-EXPOSE 80
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'yourdockerhubusername/vsr-frontend:latest'
+    }
+
+    stages {
+        stage('Build Frontend') {
+            steps {
+                dir('client-frontend') {
+                    bat 'npm install'
+                    bat 'npm run build'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('client-frontend') {
+                    bat "docker build -t %DOCKER_IMAGE% ."
+                }
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
+                    bat 'docker push %DOCKER_IMAGE%'
+                }
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                withCredentials([file(credentialsId: 'ec2-pem-private-key', variable: 'PRIVATE_KEY')]) {
+                    bat """
+                    echo Deploying to EC2...
+                    plink -i "%PRIVATE_KEY%" -batch ubuntu@13.232.223.89 ^
+                        "docker stop vsr-app || echo skipping stop && ^
+                         docker rm vsr-app || echo skipping remove && ^
+                         docker pull %DOCKER_IMAGE% && ^
+                         docker run -d --name vsr-app -p 8080:80 %DOCKER_IMAGE%"
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        failure {
+            echo 'Build failed!'
+        }
+    }
+}
 
 
 
