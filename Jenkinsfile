@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'yourdockerhubusername/vsr-frontend:latest'
+        DOCKER_IMAGE = 'amnab078/vsr-app'
     }
 
     stages {
@@ -25,7 +25,7 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
                     bat 'docker push %DOCKER_IMAGE%'
                 }
@@ -34,7 +34,7 @@ pipeline {
 
         stage('Deploy to EC2') {
             steps {
-                withCredentials([file(credentialsId: 'ec2-pem-private-key', variable: 'PRIVATE_KEY')]) {
+                withCredentials([file(credentialsId: 'ec2-ppk-key', variable: 'PPK_FILE')])  {
                     bat """
                     echo Deploying to EC2...
                     plink -i "%PRIVATE_KEY%" -batch ubuntu@13.232.223.89 ^
