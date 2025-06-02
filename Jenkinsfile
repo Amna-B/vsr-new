@@ -59,14 +59,15 @@ pipeline {
     //         }
     //     }
     // }
-    stage('Deploy to EC2') {
-    steps {
-        echo 'Deploying to EC2...'
-        withCredentials([file(credentialsId: 'ec2-private-key', variable: 'KEYFILE')]) {
-            bat """
-                plink -i %KEYFILE% -batch ubuntu@13.232.223.89 ^
-                "docker stop vsr-app || echo skipping stop && docker rm vsr-app || echo skipping remove && docker pull amnab078/vsr-app && docker run -d --name vsr-app -p 8080:80 amnab078/vsr-app"
-            """
+        stage('Deploy to EC2') {
+        steps {
+            echo 'Deploying to EC2...'
+            withCredentials([file(credentialsId: 'ec2-private-key', variable: 'KEYFILE')]) {
+                bat """
+                    plink -i %KEYFILE% -batch ubuntu@13.232.223.89 ^
+                    "docker stop vsr-app || echo skipping stop && docker rm vsr-app || echo skipping remove && docker pull amnab078/vsr-app && docker run -d --name vsr-app -p 8080:80 amnab078/vsr-app"
+                """
+            }
         }
     }
 }
