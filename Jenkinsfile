@@ -4,7 +4,8 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'amnab078/vsr-app'
     }
-
+    
+    stages {
         stage('Build Frontend') {
             steps {
                 dir('client') {
@@ -14,7 +15,7 @@ pipeline {
                     }
                 }
             }
-        
+        }        
 
 
         stage('Build Docker Image') {
