@@ -20,9 +20,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                dir('client') {
-                    bat "docker build -t %DOCKER_IMAGE% ."
-                }
+                bat 'docker build -t amnab078/vsr-app -f client/Dockerfile client'
             }
         }
 
@@ -98,6 +96,7 @@ pipeline {
 //                 '''
 //             }
 //         }
+
 
 //         stage('Push to Docker Hub') {
 //             steps {
