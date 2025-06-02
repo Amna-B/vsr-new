@@ -1,33 +1,48 @@
-# Step 1: Build React frontend
-FROM node:18 AS build-frontend
-WORKDIR /app
-COPY client ./client
-WORKDIR /app/client
-RUN npm install
-RUN npm run build
+# client-frontend/Dockerfile
+FROM nginx:alpine
+COPY build/ /usr/share/nginx/html
+EXPOSE 80
 
-# Step 2: Build and run Node.js server
-FROM node:18
 
-# Set working directory
-WORKDIR /app
 
-# Copy server code
-COPY server ./server
-COPY server/package*.json ./server/
 
-# Install backend dependencies
-WORKDIR /app/server
-RUN npm install
 
-# Copy React build into server
-COPY --from=build-frontend /app/client/build ./client/build
 
-# Expose the port
-EXPOSE 5000
 
-# Start server (fix here)
-CMD ["node", "index.js"]
+
+
+
+
+# # Step 1: Build React frontend
+# FROM node:18 AS build-frontend
+# WORKDIR /app
+# COPY client ./client
+# WORKDIR /app/client
+# RUN npm install
+# RUN npm run build
+
+# # Step 2: Build and run Node.js server
+# FROM node:18
+
+# # Set working directory
+# WORKDIR /app
+
+# # Copy server code
+# COPY server ./server
+# COPY server/package*.json ./server/
+
+# # Install backend dependencies
+# WORKDIR /app/server
+# RUN npm install
+
+# # Copy React build into server
+# COPY --from=build-frontend /app/client/build ./client/build
+
+# # Expose the port
+# EXPOSE 5000
+
+# # Start server (fix here)
+# CMD ["node", "index.js"]
 
 
 
