@@ -60,7 +60,7 @@ pipeline {
                         "docker pull amnab078/vsr-app:latest && \
                         docker stop vsr-app || echo skipping stop && \
                         docker rm vsr-app || echo skipping remove && \
-                        docker run -d --name vsr-app -p 80:80 amnab078/vsr-app:latest"
+                        docker run -d --name vsr-app -p 8080:80 amnab078/vsr-app:latest"
                     """
 
                 }
