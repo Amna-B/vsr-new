@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'amnab078/vsr-app'
         DOCKER_TAG = 'latest'
-        EC2_HOST = 'ubuntu@3.108.53.56'
+        EC2_HOST = 'ubuntu@13.126.73.194'
     }
     
     stages {
